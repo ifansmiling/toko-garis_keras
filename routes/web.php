@@ -3,11 +3,19 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\PublicTestimonialController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [ProductController::class, 'showProducts'])->name('home');
+
+// web.php
+Route::get('/products', [ProductController::class, 'showProducts'])->name('products.index');
+Route::get('/testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
+Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
+Route::post('/testimonials', [PublicTestimonialController::class, 'store'])->name('testimonials.store');
+Route::get('/testimonials', [TestimonialController::class, 'userIndex'])->name('testimonials.index');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -24,6 +32,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('testimonials', TestimonialController::class);
 });
+
 
 
 require __DIR__.'/auth.php';

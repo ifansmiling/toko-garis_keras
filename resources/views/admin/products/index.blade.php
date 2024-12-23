@@ -21,6 +21,7 @@
                     <th class="px-6 py-3 text-sm font-medium text-center">Gambar</th>
                     <th class="px-6 py-3 text-sm font-medium text-center">Harga</th>
                     <th class="px-6 py-3 text-sm font-medium text-center">Diskon</th>
+                    <th class="px-6 py-3 text-sm font-medium text-center">Harga Setelah Diskon</th> <!-- Kolom baru -->
                     <th class="px-6 py-3 text-sm font-medium text-center">Stok</th>
                     <th class="px-6 py-3 text-sm font-medium text-center">Aksi</th>
                 </tr>
@@ -39,6 +40,7 @@
                     </td>
                     <td class="px-6 py-4 text-center text-sm">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                     <td class="px-6 py-4 text-center text-sm">{{ $product->discount }}%</td>
+                    <td class="px-6 py-4 text-center text-sm">Rp {{ number_format($product->price * (1 - $product->discount / 100), 0, ',', '.') }}</td> <!-- Harga setelah diskon -->
                     <td class="px-6 py-4 text-center text-sm">{{ $product->stock }}</td>
                     <td class="px-6 py-4 text-center text-sm">
                         <div class="flex justify-center items-center space-x-2">
@@ -64,7 +66,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-4 py-2 text-center text-gray-500">
+                    <td colspan="8" class="px-4 py-2 text-center text-gray-500">
                         Belum Ada Produk
                     </td>
                 </tr>

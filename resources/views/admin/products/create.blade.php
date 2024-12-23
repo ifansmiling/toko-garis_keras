@@ -22,10 +22,15 @@
             <label for="price" class="block text-lg font-medium text-gray-700">Harga</label>
             <input type="number" name="price" id="price" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         </div>
-
+        
         <div class="mb-4">
             <label for="discount" class="block text-lg font-medium text-gray-700">Diskon (%)</label>
             <input type="number" name="discount" id="discount" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" min="0" max="100">
+        </div>
+
+        <div class="mb-4">
+            <label for="discounted_price" class="block text-lg font-medium text-gray-700">Harga Setelah Diskon</label>
+            <input type="text" id="discounted_price" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
         </div>
 
         <div class="mb-4">
@@ -46,6 +51,18 @@
                 Batal
             </a>
         </div>
+        <script>
+            // Menghitung harga setelah diskon
+            document.getElementById('price').addEventListener('input', calculateDiscountedPrice);
+            document.getElementById('discount').addEventListener('input', calculateDiscountedPrice);
+        
+            function calculateDiscountedPrice() {
+                var price = parseFloat(document.getElementById('price').value) || 0;
+                var discount = parseFloat(document.getElementById('discount').value) || 0;
+                var discountedPrice = price - (price * discount / 100);
+                document.getElementById('discounted_price').value = discountedPrice.toFixed(2);
+            }
+        </script>
     </form>
 </div>
 @endsection

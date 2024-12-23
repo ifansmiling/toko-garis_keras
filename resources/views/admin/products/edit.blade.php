@@ -26,7 +26,7 @@
         <div class="mb-4">
             <label for="price" class="block text-gray-700 font-medium mb-2">Harga</label>
             <input type="number" name="price" id="price" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   value="{{ $product->price }}" required>
+                   value="{{ $product->price }}" required oninput="calculateDiscountedPrice()">
         </div>
 
         <!-- Stok -->
@@ -40,7 +40,14 @@
         <div class="mb-4">
             <label for="discount" class="block text-gray-700 font-medium mb-2">Diskon (%)</label>
             <input type="number" name="discount" id="discount" min="0" max="100" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   value="{{ $product->discount }}">
+                   value="{{ $product->discount }}" oninput="calculateDiscountedPrice()">
+        </div>
+
+        <!-- Harga Setelah Diskon -->
+        <div class="mb-4">
+            <label for="discounted_price" class="block text-gray-700 font-medium mb-2">Harga Setelah Diskon</label>
+            <input type="text" name="discounted_price" id="discounted_price" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   value="Rp {{ number_format($product->price - ($product->price * $product->discount / 100), 0, ',', '.') }}" readonly>
         </div>
 
         <!-- Gambar -->
@@ -64,4 +71,21 @@
         </div>
     </form>
 </div>
+
+<script>
+    // Fungsi untuk menghitung harga setelah diskon
+    function calculateDiscountedPrice() {
+        var price = parseFloat(document.getElementById('price').value);
+        var discount = parseFloat(document.getElementById('discount').value);
+        if (price && discount >= 0 && discount <= 100) {
+            var discountedPrice = price - (price * discount / 100);
+            document.getElementById('discounted_price').value = 'Rp ' + discountedPrice.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        } else {
+            document.getElementById('discounted_price').value = 'Rp 0';
+        }
+    }
+
+    // Call the function to set the initial discounted price on page load
+    calculateDiscountedPrice();
+</script>
 @endsection
