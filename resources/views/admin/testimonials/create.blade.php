@@ -1,4 +1,3 @@
-<!-- resources/views/testimonials/create.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'Tambah Testimonial')

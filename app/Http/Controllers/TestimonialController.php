@@ -13,13 +13,11 @@ class TestimonialController extends Controller
         
         return view('admin.testimonials.index', compact('testimonials'));
     }
-    
 
     public function create()
     {
         return view('admin.testimonials.create');
     }
-    
 
     public function store(Request $request)
     {
@@ -37,21 +35,18 @@ class TestimonialController extends Controller
     
         return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial berhasil ditambahkan!');
     }
-    
 
     public function show(Testimonial $testimonial)
 {
     return view('admin.testimonials.show', compact('testimonial'));
-}
-
+    }
 
     public function edit(Testimonial $testimonial)
     {
         return view('admin.testimonials.edit', compact('testimonial'));
     }
 
-
-        public function update(Request $request, Testimonial $testimonial)
+    public function update(Request $request, Testimonial $testimonial)
     {
         $request->validate([
             'name' => 'required|string|max:255',

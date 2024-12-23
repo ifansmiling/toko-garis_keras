@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('price', 8, 2);
-            $table->integer('discount')->default(0); // Dalam persen
-            $table->string('image')->nullable(); // Menambahkan field gambar
-            $table->integer('stock')->default(0); // Menambahkan field stok
+            $table->integer('discount')->default(0); 
+            $table->string('image')->nullable(); 
+            $table->integer('stock')->default(0); 
             $table->timestamps();
         });
     }

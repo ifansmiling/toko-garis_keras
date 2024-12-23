@@ -33,7 +33,6 @@
                             <td class="px-6 py-4 text-sm text-center">{{ $testimonial->name }}</td>
                             <td class="px-6 py-4 text-sm text-center">{{ $testimonial->comment }}</td>
                             <td class="px-6 py-4 text-sm text-center">
-                                <!-- Menampilkan Rating dalam bentuk Bintang -->
                                 @for ($i = 1; $i <= 5; $i++)
                                     <i class="fas fa-star {{ $i <= $testimonial->rating ? 'text-yellow-500' : 'text-gray-300' }}"></i>
                                 @endfor
