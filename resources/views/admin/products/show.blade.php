@@ -10,7 +10,7 @@
     <p><strong>Harga:</strong> Rp {{ number_format($product->price, 0, ',', '.') }}</p>
     <p><strong>Diskon:</strong> {{ $product->discount }}%</p>
     <p><strong>Stok:</strong> {{ $product->stock }}</p> 
-
+    <p><strong>Ukuran:</strong> {{ $product->size ? $product->size : 'Tidak tersedia' }}</p>
     <p><strong>Gambar:</strong></p>
     @if ($product->image)
         <img src="{{ asset('storage/product_images/' . $product->image) }}" alt="Gambar Produk" class="w-48 h-48 object-cover rounded-md">

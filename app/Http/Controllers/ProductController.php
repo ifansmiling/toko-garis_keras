@@ -11,8 +11,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all(); 
-        return view('admin.products.index', compact('products')); 
+        $products = Product::all();
+        return view('admin.products.index', compact('products'));
     }
 
     public function showProducts()
@@ -23,18 +23,26 @@ class ProductController extends Controller
             } else {
                 $product->discounted_price = $product->price;
             }
+
+            if ($product->images) {
+                $product->image_urls = collect(json_decode($product->images))->map(function ($image) {
+                    return asset('storage/product_images/' . $image);
+                });
+            } else {
+                $product->image_urls = null;
+            }
+
             return $product;
         });
-    
-        $testimonials = Testimonial::take(3)->get();
-    
+
+        $testimonials = Testimonial::latest()->take(3)->get();
+
         return view('welcome', compact('products', 'testimonials'));
     }
-    
 
     public function create()
     {
-        return view('admin.products.create'); 
+        return view('admin.products.create');
     }
 
     public function edit(Product $product)
@@ -43,30 +51,35 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric',
-        'discount' => 'nullable|integer|min:0|max:100',
-        'stock' => 'required|integer|min:0', 
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', 
-    ]);
-    
-    $price = $request->price;
-    $discount = $request->discount;
-    $discountedPrice = $price - (($price * $discount) / 100);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'discount' => 'nullable|integer|min:0|max:100',
+            'stock' => 'required|integer|min:0',
+            'size' => 'nullable|string|max:50',
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
 
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('product_images', 'public'); 
-        $validated['image'] = $imagePath; 
-    }
+        $price = $request->price;
+        $discount = $request->discount;
+        $discountedPrice = $price - (($price * $discount) / 100);
 
-    $validated['discounted_price'] = $discountedPrice;
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store('product_images', 'public');
+                $imagePaths[] = $imagePath;
+            }
+        }
 
-    Product::create($validated);
+        $validated['images'] = json_encode($imagePaths);
+        $validated['discounted_price'] = $discountedPrice;
 
-    return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
+        Product::create($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function show(Product $product)
@@ -75,51 +88,70 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Product $product)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric',
-        'discount' => 'nullable|integer|min:0|max:100',
-        'stock' => 'required|integer|min:0', // Validasi stok
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-    ]);
-    
-    $price = $request->price;
-    $discount = $request->discount;
-    $discountedPrice = $price - (($price * $discount) / 100);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'discount' => 'nullable|integer|min:0|max:100',
+            'stock' => 'required|integer|min:0',
+            'size' => 'nullable|string|max:50',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $product->name = $validated['name'];
-    $product->description = $validated['description'];
-    $product->price = $validated['price'];
-    $product->discount = $validated['discount'];
-    $product->stock = $validated['stock']; 
-    $product->discounted_price = $discountedPrice;
+        $price = $request->price;
+        $discount = $request->discount;
+        $discountedPrice = $price - (($price * $discount) / 100);
 
-    if ($request->hasFile('image')) {
-        if ($product->image) {
-            Storage::delete('public/product_images/' . $product->image);
+        // Update basic product information
+        $product->name = $validated['name'];
+        $product->description = $validated['description'];
+        $product->price = $validated['price'];
+        $product->discount = $validated['discount'];
+        $product->stock = $validated['stock'];
+        $product->size = $validated['size'];
+        $product->discounted_price = $discountedPrice;
+
+        // Handle image updates
+        $existingImages = json_decode($product->images, true) ?? [];
+        $newImagePaths = [];
+
+        if ($request->hasFile('images')) {
+            // Delete old images
+            foreach ($existingImages as $oldImage) {
+                if (Storage::exists('public/' . $oldImage)) {
+                    Storage::delete('public/' . $oldImage);
+                }
+            }
+
+            // Save new images
+            foreach ($request->file('images') as $image) {
+                $newImagePath = $image->store('product_images', 'public');
+                $newImagePaths[] = $newImagePath;
+            }
+
+            $product->images = json_encode($newImagePaths);
+        } else {
+            // Use existing images if no new images are uploaded
+            $product->images = json_encode($existingImages);
         }
 
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->storeAs('public/product_images', $imageName);
+        $product->save();
 
-        $product->image = $imageName;
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-    $product->save();
-
-    return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
-    }
-    
     public function destroy(Product $product)
     {
-        if ($product->image && Storage::exists('public/' . $product->image)) {
-            Storage::delete('public/' . $product->image);
+        $images = json_decode($product->images, true) ?? [];
+        foreach ($images as $image) {
+            if (Storage::exists('public/' . $image)) {
+                Storage::delete('public/' . $image);
+            }
         }
-    
+
         $product->delete();
-    
+
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
     }
 }

@@ -7,33 +7,34 @@
     <title>Semua Testimoni</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-b from-blue-50 to-blue-100 text-gray-800 font-sans">
+<body class="bg-black text-gray-200 font-sans">
 
     <div class="container mx-auto px-4 py-12">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Semua Testimoni</h2>
-        
+        <h2 class="text-4xl font-bold text-center text-white mb-8">Semua Testimoni</h2>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             @foreach ($testimonials as $testimonial)
-            <div class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transform hover:-translate-y-2 transition duration-300">
-                <h3 class="text-xl font-semibold text-gray-800">{{ $testimonial->name }}</h3>
-                <p class="text-sm text-gray-600 mt-2 italic">"{{ $testimonial->comment }}"</p>
+            <div class="bg-gray-800 shadow-lg rounded-lg p-6 text-center hover:shadow-2xl transform hover:-translate-y-2 transition duration-300">
+                <h3 class="text-xl font-semibold text-white">{{ $testimonial->name }}</h3>
+                <p class="text-sm text-gray-400 mt-2 italic">"{{ $testimonial->comment }}"</p>
                 <div class="mt-4 flex justify-center">
-                    @for ($i = 1; $i <= 5; $i++)
-                        @if ($i <= $testimonial->rating)
-                            <span class="text-yellow-400 text-lg">&#9733;</span>
+                    @for ($i = 1; $i <= 5; $i++) @if ($i <=$testimonial->rating)
+                        <span class="text-yellow-400 text-lg">&#9733;</span>
                         @else
-                            <span class="text-gray-300 text-lg">&#9733;</span>
+                        <span class="text-gray-500 text-lg">&#9733;</span>
                         @endif
-                    @endfor
+                        @endfor
                 </div>
             </div>
             @endforeach
         </div>
 
         <div class="text-center mt-8">
-            <a href="{{ url('/') }}" class="text-blue-600 hover:underline">Kembali ke Beranda</a>
+            <a href="{{ url('/') }}" class="inline-block mt-6 px-8 py-3 bg-yellow-500 text-black font-semibold rounded-lg shadow hover:bg-yellow-600 transition duration-300 text-center">Kembali ke Beranda</a>
+
         </div>
     </div>
 
 </body>
 </html>
+

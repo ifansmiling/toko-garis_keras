@@ -50,15 +50,30 @@
                    value="Rp {{ number_format($product->price - ($product->price * $product->discount / 100), 0, ',', '.') }}" readonly>
         </div>
 
+        <!-- Ukuran -->
+        <div class="mb-4">
+            <label for="size" class="block text-gray-700 font-medium mb-2">Ukuran</label>
+            <select name="size" id="size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="" disabled>Pilih Ukuran</option>
+                <option value="S" {{ $product->size === 'S' ? 'selected' : '' }}>S</option>
+                <option value="M" {{ $product->size === 'M' ? 'selected' : '' }}>M</option>
+                <option value="L" {{ $product->size === 'L' ? 'selected' : '' }}>L</option>
+                <option value="XL" {{ $product->size === 'XL' ? 'selected' : '' }}>XL</option>
+                <option value="XXL" {{ $product->size === 'XXL' ? 'selected' : '' }}>XXL</option>
+            </select>
+        </div>
+
         <!-- Gambar -->
         <div class="mb-6">
-            <label for="image" class="block text-gray-700 font-medium mb-2">Gambar</label>
-            <input type="file" name="image" id="image" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            @if ($product->image)
+            <label for="images" class="block text-gray-700 font-medium mb-2">Gambar</label>
+            <input type="file" name="images[]" id="images" multiple class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            @if ($product->images)
                 <p class="mt-2 text-gray-600">Gambar saat ini:</p>
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Gambar Produk" class="w-32 h-32 object-cover rounded-md mt-2">
+                @foreach (json_decode($product->images, true) as $image)
+                    <img src="{{ asset('storage/' . $image) }}" alt="Gambar Produk" class="w-32 h-32 object-cover rounded-md mt-2">
+                @endforeach
             @endif
-        </div>
+        </div>        
 
         <!-- Tombol Aksi -->
         <div class="flex justify-end space-x-4">

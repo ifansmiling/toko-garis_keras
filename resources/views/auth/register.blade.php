@@ -1,52 +1,68 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+<div class="flex justify-center items-center h-screen p-10 bg-yellow-300">
+    <div class="grid md:grid-cols-2 grid-cols-1 border rounded-3xl shadow-lg bg-indigo-100">
+        <!-- Form Section -->
+        <div class="flex justify-center items-center p-5 bg-white rounded-3xl">
+            <form method="POST" action="{{ route('register') }}" class="w-full max-w-sm">
+                @csrf
+                <header class="mb-8 text-center">
+                    <img class="w-40 mx-auto mb-5" src="{{ asset('img/kkk.jpg') }}" alt="Logo" />
+                    <h1 class="text-2xl font-bold text-indigo-700">Register</h1>
+                </header>
+
+                <!-- Name -->
+                <div class="relative mb-5">
+                    <label for="name" class="text-sm font-semibold text-gray-600">Name</label>
+                    <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" class="w-full bg-gray-100 border border-indigo-500 rounded-md p-3 mt-1 outline-none focus:ring-2 focus:ring-indigo-400">
+                    @if($errors->has('name'))
+                    <span class="text-sm text-red-500">{{ $errors->first('name') }}</span>
+                    @endif
+                </div>
+
+                <!-- Email Address -->
+                <div class="relative mb-5">
+                    <label for="email" class="text-sm font-semibold text-gray-600">Email</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" class="w-full bg-gray-100 border border-indigo-500 rounded-md p-3 mt-1 outline-none focus:ring-2 focus:ring-indigo-400">
+                    @if($errors->has('email'))
+                    <span class="text-sm text-red-500">{{ $errors->first('email') }}</span>
+                    @endif
+                </div>
+
+                <!-- Password -->
+                <div class="relative mb-5">
+                    <label for="password" class="text-sm font-semibold text-gray-600">Password</label>
+                    <input id="password" type="password" name="password" required autocomplete="new-password" class="w-full bg-gray-100 border border-indigo-500 rounded-md p-3 mt-1 outline-none focus:ring-2 focus:ring-indigo-400">
+                    @if($errors->has('password'))
+                    <span class="text-sm text-red-500">{{ $errors->first('password') }}</span>
+                    @endif
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="relative mb-5">
+                    <label for="password_confirmation" class="text-sm font-semibold text-gray-600">Confirm Password</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" class="w-full bg-gray-100 border border-indigo-500 rounded-md p-3 mt-1 outline-none focus:ring-2 focus:ring-indigo-400">
+                    @if($errors->has('password_confirmation'))
+                    <span class="text-sm text-red-500">{{ $errors->first('password_confirmation') }}</span>
+                    @endif
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+                    Register
+                </button>
+
+                <!-- Already Registered Link -->
+                <div class="mt-4 text-center">
+                    <a href="{{ route('login') }}" class="text-sm text-indigo-600 hover:underline">Already registered?</a>
+                </div>
+            </form>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <!-- Image Section -->
+        <div class="hidden md:block">
+            <img src="https://img.freepik.com/premium-vector/vector-abstract-seamless-pattern-with-stars-blue-background_117177-1008.jpg" class="rounded-3xl object-cover h-full w-full" alt="Background Image">
         </div>
+    </div>
+</div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>

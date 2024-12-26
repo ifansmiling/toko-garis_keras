@@ -20,7 +20,6 @@ class TestimonialController extends Controller
         
         return view('testimonials.index', compact('testimonials'));
     }
-    
 
     public function create()
     {
@@ -29,24 +28,28 @@ class TestimonialController extends Controller
 
     public function store(Request $request)
     {
+        // Validate the incoming data
         $request->validate([
             'name' => 'required|string|max:255',
             'comment' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
         ]);
     
+        // Create a new testimonial
         Testimonial::create([
             'name' => $request->name,
             'comment' => $request->comment,
             'rating' => $request->rating,
         ]);
     
-        return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial berhasil ditambahkan!');
+        // Redirect to testimonials.index route with a HotToast notification
+        return redirect()->route('testimonials.index')
+                         ->with('toast', 'Testimoni berhasil dikirim! Terima kasih atas feedback Anda.');
     }
 
     public function show(Testimonial $testimonial)
-{
-    return view('admin.testimonials.show', compact('testimonial'));
+    {
+        return view('admin.testimonials.show', compact('testimonial'));
     }
 
     public function edit(Testimonial $testimonial)
@@ -56,25 +59,32 @@ class TestimonialController extends Controller
 
     public function update(Request $request, Testimonial $testimonial)
     {
+        // Validate the incoming data for updates
         $request->validate([
             'name' => 'required|string|max:255',
             'comment' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
         ]);
+        
+        // Update the testimonial
         $testimonial->update([
             'name' => $request->name,
             'comment' => $request->comment,
             'rating' => $request->rating,
         ]);
 
-        return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial berhasil diperbarui!');
+        // Redirect back to the admin testimonials page with a HotToast notification
+        return redirect()->route('admin.testimonials.index')
+                         ->with('toast', 'Testimonial berhasil diperbarui!');
     }
 
     public function destroy(Testimonial $testimonial)
     {
+        // Delete the testimonial
         $testimonial->delete();
     
-        return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial berhasil dihapus!');
+        // Redirect back to the admin testimonials page with a HotToast notification
+        return redirect()->route('admin.testimonials.index')
+                         ->with('toast', 'Testimonial berhasil dihapus!');
     }
-    
 }
